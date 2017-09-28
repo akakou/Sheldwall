@@ -58,7 +58,7 @@ typings/
 .env
 
 # packeage lock json file
-src/package-lock.json
+package-lock.json*
 
 # docker db volumes
 db/mongo_data

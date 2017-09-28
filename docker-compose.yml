@@ -1,15 +1,15 @@
 version: '2'
 services:
   wall:
-    image: node:latest
+    build: ./wall
     volumes:
-      - "./src:/src"
-    working_dir: /src
+      - "./wall:/wall"
+    working_dir: /wall
     ports:
       - "80:80"
     command: [sh, -c, npm install && node index.js]
     environment:
-      - PORT="80"
+      - PORT=80
     links:
       - db
   db:
