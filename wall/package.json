@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/akakou/Sheldwall#readme",
   "dependencies": {
-    "express": "^4.15.5"
+    "express": "^4.16.1"
   }
 }

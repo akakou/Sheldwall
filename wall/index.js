@@ -1,11 +1,38 @@
-var http = require('http');
+/*
+  wall/index.js
 
-var port = process.env['PORT'];
-
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World\n');
-}).listen(port);
+  It is main source of sheldwall.
+  In now, it it program for https proxy.
+*/
 
 
-console.log('Server running at http://localhost:' + port);
+var https = require('https');
+var fs = require('fs');
+var express = require('express');
+var app = express();
+
+
+/* main config */
+var config = {
+  // port
+  port: process.env['PORT'],
+
+  // ssl keys
+  ssl: {
+    pfx: fs.readFileSync(__dirname + process.env['SSL_PFX']),
+    passphrase: process.env['SSL_PASS']
+  }
+};
+
+
+/* create https server */
+https.createServer(config.ssl, function (req,res) {
+  // https head
+  res.writeHead(200, {
+    'Content-Type': 'text/plain'
+  });
+  // https body
+  res.end("Hello, world\n");
+}).listen(config.port);
+
+console.log('Server running at http://localhost:' + config.port);

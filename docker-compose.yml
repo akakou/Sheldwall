@@ -3,13 +3,16 @@ services:
   wall:
     build: ./wall
     volumes:
-      - "./wall:/wall"
+      - ./wall:/wall
     working_dir: /wall
     ports:
       - "80:80"
+      - "443:443"
     command: [sh, -c, npm install && node index.js]
     environment:
-      - PORT=80
+      - PORT=443
+      - SSL_PFX=/keys/ssl.pfx
+      - SSL_PASS=sheld is secure
     links:
       - db
   db:
