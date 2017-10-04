@@ -15,17 +15,14 @@ var config = require('./config')
 
 /* create https server */
 https.createServer(config.ssl, function (req,res) {
-  /*
-    get arguments and send
-    response to client
-  */
-  proxy_client.getWeb.then(function(response){
-    // https header
-    res.writeHead(200, response.headers);
-
-    // https body
-    res.end(response.body);
-  })
+  /* get arguments and send response to client */
+  proxy_client.getWeb(req)
+    .then(function(proxy_server_response){
+      // https header
+      res.writeHead(200, proxy_server_response.headers.toString());
+      // https body
+      res.end(proxy_server_response.body);
+    })
 }).listen(config.port);
 
-console.log('Server running at http://localhost:' + config.port);
+console.log('Server running at https://localhost:' + config.port);
