@@ -5,24 +5,34 @@
   In now, it it program for https proxy.
 */
 
+
 var https = require('https');
+var fs = require('fs');
 var express = require('express');
 var app = express();
 
-var proxy_client = require('./proxy_client')
-var config = require('./config')
+
+/* main config */
+var config = {
+  // port
+  port: process.env['PORT'],
+
+  // ssl keys
+  ssl: {
+    pfx: fs.readFileSync(__dirname + process.env['SSL_PFX']),
+    passphrase: process.env['SSL_PASS']
+  }
+};
 
 
 /* create https server */
 https.createServer(config.ssl, function (req,res) {
-  /* get arguments and send response to client */
-  proxy_client.getWeb(req)
-    .then(function(proxy_server_response){
-      // https header
-      res.writeHead(200, proxy_server_response.headers.toString());
-      // https body
-      res.end(proxy_server_response.body);
-    })
+  // https head
+  res.writeHead(200, {
+    'Content-Type': 'text/plain'
+  });
+  // https body
+  res.end("Hello, world\n");
 }).listen(config.port);
 
 console.log('Server running at https://localhost:' + config.port);
