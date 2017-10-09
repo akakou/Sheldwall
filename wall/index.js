@@ -5,11 +5,8 @@
   In now, it it program for https proxy.
 */
 
-
-var https = require('https');
+var httpProxy = require('http-proxy');
 var fs = require('fs');
-var express = require('express');
-var app = express();
 
 
 /* main config */
@@ -19,20 +16,27 @@ var config = {
 
   // ssl keys
   ssl: {
-    pfx: fs.readFileSync(__dirname + process.env['SSL_PFX']),
-    passphrase: process.env['SSL_PASS']
+    key: fs.readFileSync(__dirname + process.env['SSL_KEY'], 'utf8'),
+    cert: fs.readFileSync(__dirname + process.env['SSL_CERT'], 'utf8'),
   }
 };
 
 
-/* create https server */
-https.createServer(config.ssl, function (req,res) {
-  // https head
-  res.writeHead(200, {
-    'Content-Type': 'text/plain'
-  });
-  // https body
-  res.end("Hello, world\n");
-}).listen(config.port);
+var proxy = httpProxy.createServer({
+    ssl: config.ssl,
+    target: 'https://www.google.com',
+    secure: true
+}).listen(443);
+
+
+proxy.on('proxyReq', function (proxyReq, req, res) {
+  console.log(proxyReq);
+});
+
+proxy.on('proxyRes', function(proxyRes, req, res) {
+  console.log(proxyRes);
+});
+
+
 
 console.log('Server running at https://localhost:' + config.port);

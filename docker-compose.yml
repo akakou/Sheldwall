@@ -11,8 +11,8 @@ services:
     command: [sh, -c, npm install && node index.js]
     environment:
       - PORT=443
-      - SSL_PFX=/keys/ssl.pfx
-      - SSL_PASS=sheld is secure
+      - SSL_KEY=/keys/key.pem
+      - SSL_CERT=/keys/server.crt
     links:
       - db
   db:

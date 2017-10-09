@@ -13,13 +13,14 @@
   "keywords": [
     "Sheld"
   ],
-  "author": "Sheld H@ckers",
+  "author": "Sheld Developers",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/akakou/Sheldwall/issues"
   },
   "homepage": "https://github.com/akakou/Sheldwall#readme",
   "dependencies": {
-    "express": "^4.16.1"
+    "express": "^4.16.1",
+    "http-proxy": "^1.16.2"
   }
 }
