@@ -5,8 +5,8 @@
   In now, it it program for https proxy.
 */
 
-var httpProxy = require('http-proxy');
 var fs = require('fs');
+var hoxy = require('hoxy');
 
 
 /* main config */
@@ -22,21 +22,19 @@ var config = {
 };
 
 
-var proxy = httpProxy.createServer({
-    ssl: config.ssl,
-    target: 'https://www.google.com',
-    secure: true
-}).listen(443);
+/* run proxy server  */
+var proxy = hoxy.createServer({
+    certAuthority: config.ssl,
+}).listen(config.port);
 
 
-proxy.on('proxyReq', function (proxyReq, req, res) {
-  console.log(proxyReq);
+/* call when proxy get request */
+proxy.intercept({
+    phase: 'request'
+}, function(req, resp, cycle) {
+    console.log(req.url);
 });
 
-proxy.on('proxyRes', function(proxyRes, req, res) {
-  console.log(proxyRes);
-});
 
-
-
+/* console log */
 console.log('Server running at https://localhost:' + config.port);

@@ -21,6 +21,7 @@
   "homepage": "https://github.com/akakou/Sheldwall#readme",
   "dependencies": {
     "express": "^4.16.1",
+    "hoxy": "^3.2.2",
     "http-proxy": "^1.16.2"
   }
 }
