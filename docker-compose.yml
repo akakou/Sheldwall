@@ -1,10 +1,10 @@
 version: '2'
 services:
   app:
-    build: ./wall
+    build: ./app
     volumes:
-      - ./wall:/wall
-    working_dir: /wall
+      - ./app:/app
+    working_dir: /app
     ports:
       - "80:80"
       - "443:443"
