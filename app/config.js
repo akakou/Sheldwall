@@ -8,6 +8,12 @@ var fs = require('fs');
 
 
 var config = {
+  // git repository
+  git: {
+    url: process.env['GIT'],
+    directory: 'signature'
+  },
+
   // port
   port: process.env['PORT'],
 

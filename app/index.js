@@ -6,9 +6,12 @@
 */
 
 var hoxy = require('hoxy');
-var config = require('./config.js')
-var filter = require('./filter.js')
+var config = require('./config')
+var filter = require('./filter')
+var update = require('./update')
 
+/* updating signature loop */
+update();
 
 /* run proxy server  */
 var proxy = hoxy.createServer({
@@ -22,7 +25,7 @@ proxy.intercept({
   as: 'string'
 }, function(req, resp, cycle) {
   console.log('hello');
-  resp.string = filter.string(resp.string);
+  resp.string = filter.check.string(resp.string);
 });
 
 

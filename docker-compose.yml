@@ -10,6 +10,7 @@ services:
       - "443:443"
     command: [sh, -c, npm install && node index.js]
     environment:
+      - GIT=https://github.com/akakou-stash/sheld-test-repo
       - PORT=443
       - SSL_KEY=/keys/key.pem
       - SSL_CERT=/keys/server.crt
