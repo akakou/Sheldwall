@@ -3,6 +3,7 @@
 
   It is config source of sheldwall.
 */
+'use strict'
 
 var fs = require('fs');
 

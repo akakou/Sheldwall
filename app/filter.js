@@ -4,7 +4,7 @@
   It is source check response and signature list
   to be filter from danger site.
 */
-
+'use strict'
 
 /* filter strings site */
 function check_string(response){

@@ -3,6 +3,7 @@
 
   It is source updating signature list.
 */
+'use strict'
 
 var fs = require('fs');
 

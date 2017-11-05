@@ -4,6 +4,7 @@
   It is main source of sheldwall.
   In now, it it program for https proxy.
 */
+'use strict'
 
 var hoxy = require('hoxy');
 var config = require('./config')
