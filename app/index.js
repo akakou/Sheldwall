@@ -6,6 +6,8 @@
 */
 
 var hoxy = require('hoxy');
+var config = require('./config.js')
+var filter = require('./filter.js')
 
 
 /* run proxy server  */
@@ -19,7 +21,8 @@ proxy.intercept({
   phase: 'response',
   as: 'string'
 }, function(req, resp, cycle) {
-  resp.string += 'hogehogehogehoge';
+  console.log('hello');
+  resp.string = filter.string(resp.string);
 });
 
 

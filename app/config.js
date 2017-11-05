@@ -17,3 +17,6 @@ var config = {
     cert: fs.readFileSync(__dirname + process.env['SSL_CERT'], 'utf8'),
   }
 };
+
+
+module.exports = config;
