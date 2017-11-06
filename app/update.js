@@ -31,11 +31,12 @@ function update() {
     } else {
       console.log('clone');
       require('simple-git')().clone(config.git.url, config.git.directory);
+
     }
   }
   control_git();
 
-  setInterval(control_git, 1000);
+  setInterval(control_git, 10*60*1000);
 }
 
 

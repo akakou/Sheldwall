@@ -10,9 +10,27 @@ var hoxy = require('hoxy');
 var config = require('./config')
 var filter = require('./filter')
 var update = require('./update')
+var mongo = require("mongodb").MongoClient;
+
+
+/* connect to mongodb */
+mongo.connect(config.mongo.url, function(error, db){
+  // check error
+  if(error){
+    console.log(error);
+  }
+
+  // open log collection
+  var collection = db.collection("log");
+  
+  // close database
+  db.close();
+});
+
 
 /* updating signature loop */
 update();
+
 
 /* run proxy server  */
 var proxy = hoxy.createServer({
@@ -23,10 +41,21 @@ var proxy = hoxy.createServer({
 /* call when proxy get request */
 proxy.intercept({
   phase: 'response',
-  as: 'string'
+  as: 'json'
 }, function(req, resp, cycle) {
   console.log('hello');
-  resp.string = filter.check.string(resp.string);
+
+  mongo.connect(config.mongo_url, function(error, db){
+    if(error){
+      console.log(error);
+    }
+
+    var collection = db.collection("log");
+
+    collection.insertOne(req.json, function(error, result){
+      db.close();
+    });
+  });
 });
 
 

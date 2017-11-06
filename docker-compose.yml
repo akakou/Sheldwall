@@ -19,8 +19,10 @@ services:
   db:
     image: mongo:latest
     volumes:
-      - ./db/mongo_data:/var/lib/mongo
+      - ./db/data:/data/db
       - ./db/init/:/docker-entrypoint-initdb.d/
+    ports:
+      - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=username
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - IMPORT_FROM_VOLUME=true
+      - MONGO_INITDB_DATABASE=fluentd

@@ -61,7 +61,8 @@ typings/
 package-lock.json*
 
 # docker db volumes
-db/mongo_data
+db/data
 
 # signature file
 signature/
+

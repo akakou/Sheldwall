@@ -5,18 +5,25 @@
 */
 'use strict'
 
+var MongoClient = require("mongodb").MongoClient;
 var fs = require('fs');
 
 
 var config = {
   // git repository
   git: {
-    url: process.env['GIT'],
+    url: process.env.GIT,
     directory: 'signature'
   },
 
+  // mongo db
+  mongo: {
+    url: 'mongodb://db:27017/local',
+  },
+
   // port
-  port: process.env['PORT'],
+  port: process.env.PORT,
+
 
   // ssl keys
   ssl: {

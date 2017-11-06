@@ -1,5 +1,5 @@
 // client authcation database
-use users;
+db.createCollection('user');
 
 // packets logs database
-use log;
+db.createCollection('log');
