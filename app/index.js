@@ -13,21 +13,6 @@ var update = require('./update')
 var mongo = require("mongodb").MongoClient;
 
 
-/* connect to mongodb */
-mongo.connect(config.mongo.url, function(error, db){
-  // check error
-  if(error){
-    console.log(error);
-  }
-
-  // open log collection
-  var collection = db.collection("log");
-  
-  // close database
-  db.close();
-});
-
-
 /* updating signature loop */
 update();
 
@@ -41,18 +26,29 @@ var proxy = hoxy.createServer({
 /* call when proxy get request */
 proxy.intercept({
   phase: 'response',
-  as: 'json'
+  as: 'string'
 }, function(req, resp, cycle) {
   console.log('hello');
 
-  mongo.connect(config.mongo_url, function(error, db){
+  /* add response log to mongodb */
+  mongo.connect(config.mongo.url, function(error, db){
+    // check error
     if(error){
       console.log(error);
+      return;
     }
 
+    // connect to collenction
     var collection = db.collection("log");
 
-    collection.insertOne(req.json, function(error, result){
+    // insert response
+    collection.insertOne(req, function(error, result){
+      // check error
+      if(error){
+        console.log(error);
+	return;
+      }
+      // close database
       db.close();
     });
   });
