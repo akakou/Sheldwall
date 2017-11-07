@@ -1,5 +1,9 @@
-// client authcation database
+// client authcation collection
 db.createCollection('user');
 
-// packets logs database
+// packets logs collection
 db.createCollection('log');
+
+// signature collection
+db.createCollection('signature');
+

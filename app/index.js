@@ -7,10 +7,11 @@
 'use strict'
 
 var hoxy = require('hoxy');
+var mongo = require("mongodb").MongoClient;
+
 var config = require('./config')
 var filter = require('./filter')
 var update = require('./update')
-var mongo = require("mongodb").MongoClient;
 
 
 /* updating signature loop */
@@ -31,10 +32,10 @@ proxy.intercept({
   console.log('hello');
 
   /* add response log to mongodb */
-  mongo.connect(config.mongo.url, function(error, db){
+  mongo.connect(config.mongo.url, function(err, db){
     // check error
-    if(error){
-      console.log(error);
+    if(err){
+      console.log(err);
       return;
     }
 
@@ -44,9 +45,9 @@ proxy.intercept({
     // insert response
     collection.insertOne(req, function(error, result){
       // check error
-      if(error){
-        console.log(error);
-	return;
+      if(err){
+        console.log(err);
+	      return;
       }
       // close database
       db.close();
