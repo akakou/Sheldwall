@@ -60,23 +60,31 @@ function update() {
       // connect to collenction
       var collection = db.collection('signature');
 
-      for(var file of file_list){
-        // read file and dump to json
-        var file = fs.readFileSync('./signature/' + file, 'utf-8');
-        var signature = JSON.parse(file);
+      /* insert signature data to mongodb */
+      async function insert(){
+        for(var file of file_list){
+          // read file and dump to json
+          var file = fs.readFileSync('./signature/' + file, 'utf-8');
+          var signature = JSON.parse(file);
 
-        // insert response
-        collection.insertOne(signature, function(error, result){
-          // check error
-          if(err){
-            console.log(err);
-    	      return;
-          }
-        });
+          // insert response
+          collection.insertOne(signature, function(error, result){
+            // check error
+            if(err){
+              console.log(err);
+              return;
+            }
+          });
+        }
       }
-      
-      // close database
-      db.close();
+      /* close db connection */
+      async function close(){
+        // close database
+        db.close();
+      }
+
+      /* do with promise */
+      insert().then(close());
     });
   }
 
