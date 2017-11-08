@@ -6,8 +6,9 @@
 */
 'use strict'
 
+
 /* filter strings site */
-function check_string(response){
+function checkString(response){
   var signature_list = ['Example'];
   var is_secure = true;
 
@@ -30,5 +31,5 @@ function check_string(response){
 module.exports = {
   // message used denger_message
   denger_message: 'This site is danger !',
-  string: check_string
+  string: checkString
 };

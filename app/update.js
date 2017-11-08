@@ -14,30 +14,32 @@ var config = require('./config');
 /* update signature */
 function update() {
   /* pull or clone signature data */
-  function updateGitRepo(){
+  (() => {
     /* check folder exist */
-    function isExistFile(file) {
+    var isExistFile = function(file){
       try {
         fs.accessSync('./signature');
         return true;
       } catch(err) {
-        if(err.code === 'ENOENT') return false
+        if(err.code === 'ENOENT'){
+          return false;
+        }
       }
     }
 
     // check folder exist
     if (isExistFile(config.git.directory)) {
-      console.log('pull');
+      console.log('signature pull !');
       require('simple-git')(config.git.directory).pull();
     } else {
-      console.log('clone');
+      console.log('signature clone !');
       require('simple-git')().clone(config.git.url, config.git.directory);
     }
-  }
+  })();
+
 
   /* take in sigature from git repository */
-  function takeInFromGitRepo(){
-    console.log('hoge')
+  (() => {
     // get file list
     var file_list = [];
     var temporary_file_list = fs.readdirSync('./signature');
@@ -50,7 +52,7 @@ function update() {
     }
 
     /* add signature log to mongodb */
-    mongo.connect(config.mongo.url, function(err, db) {
+    mongo.connect(config.mongo.url, async (err, db) => {
       // check error
       if(err){
         console.log(err);
@@ -61,44 +63,32 @@ function update() {
       var collection = db.collection('signature');
 
       /* insert signature data to mongodb */
-      async function insert(){
-        for(var file of file_list){
-          // read file and dump to json
-          var file = fs.readFileSync('./signature/' + file, 'utf-8');
-          var signature = JSON.parse(file);
+      for(var file of file_list){
+        // read file and dump to json
+        var file = fs.readFileSync('./signature/' + file, 'utf-8');
+        var signature = JSON.parse(file);
 
-          // insert response
-          collection.insertOne(signature, function(error, result){
-            // check error
-            if(err){
-              console.log(err);
-              return;
-            }
-          });
-        }
-      }
-      /* close db connection */
-      async function close(){
-        // close database
-        db.close();
+        // insert response
+        await collection.insertOne(signature, () => {
+          // check error
+          if(err){
+            console.log(err);
+            return;
+          } else{
+            console.log('insert signature !');
+          }
+        });
       }
 
-      /* do with promise */
-      insert().then(close());
+      // close database connection
+      db.close();
     });
-  }
+  })();
 
-  /* main script for update signature*/
-  var updateSignature = function(){
-    updateGitRepo();
-    takeInFromGitRepo();
-  };
 
-  updateSignature();
-
-  setInterval(updateSignature, 10*60*1000);
+  /* settimeout loop */
+  setTimeout(update, 10*60*1000);
 }
-
 
 
 module.exports = update;

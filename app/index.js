@@ -29,10 +29,10 @@ proxy.intercept({
   phase: 'response',
   as: 'string'
 }, function(req, resp, cycle) {
-  console.log('hello');
+  console.log('access from' + req.hostname);
 
   /* add response log to mongodb */
-  mongo.connect(config.mongo.url, function(err, db){
+  mongo.connect(config.mongo.url, async (err, db) => {
     // check error
     if(err){
       console.log(err);
@@ -43,15 +43,16 @@ proxy.intercept({
     var collection = db.collection("log");
 
     // insert response
-    collection.insertOne(req, function(error, result){
+    collection.insertOne(req, (error, result) => {
       // check error
       if(err){
         console.log(err);
 	      return;
       }
-      // close database
-      db.close();
     });
+
+    // close database
+    db.close();
   });
 });
 
