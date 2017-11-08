@@ -13,12 +13,10 @@ var config = require('./config')
 var filter = require('./filter')
 var update = require('./update')
 
-
-/* updating signature loop */
-update();
+process.on('unhandledRejection', console.dir);
 
 
-/* run proxy server  */
+/* run proxy server */
 var proxy = hoxy.createServer({
   certAuthority: config.ssl,
 }).listen(config.port);
@@ -28,34 +26,46 @@ var proxy = hoxy.createServer({
 proxy.intercept({
   phase: 'response',
   as: 'string'
-}, function(req, resp, cycle) {
-  console.log('access from' + req.hostname);
+}, async (req, resp, cycle) => {
+  console.log('access from ' + req.hostname);
+   var res = resp.string;
 
-  /* add response log to mongodb */
-  mongo.connect(config.mongo.url, async (err, db) => {
-    // check error
-    if(err){
-      console.log(err);
-      return;
-    }
-
-    // connect to collenction
-    var collection = db.collection("log");
-
-    // insert response
-    collection.insertOne(req, (error, result) => {
+  /* database transaction */
+  await new Promise((resolve) => {
+    mongo.connect(config.mongo.url, async (err, db) => {
       // check error
       if(err){
         console.log(err);
-	      return;
+        return;
       }
-    });
 
-    // close database
-    db.close();
+      // connect to collenction
+      var collection = db.collection("log");
+
+      // insert response
+      await collection.insertOne(req, (error, result) => {
+        // check error
+        if(err){
+          console.log(err);
+          return;
+        }
+      });
+
+      // check response that is secure
+      resp.string = await filter.string(res, db);
+
+      // after treatment
+      db.close();
+      resolve();
+    });
   });
+
+  return;
 });
 
 
 /* console log */
 console.log('Server running at https://localhost:' + config.port);
+
+/* updating signature loop */
+update();

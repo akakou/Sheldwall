@@ -6,30 +6,38 @@
 */
 'use strict'
 
+var mongo = require("mongodb").MongoClient;
 
-/* filter strings site */
-function checkString(response){
-  var signature_list = ['Example'];
+var config = require('./config');
+
+
+/* filter site with response text */
+async function checkString(response, db){
+  // check response danger
+  var signature_list = [];
+  var collection = db.collection("signature");
   var is_secure = true;
 
-  // check is secure
-  for(var signature of signature_list){
-    var is_secure = response.indexOf(signature) == -1;
+  /* get all signature from database */
+  await new Promise((resolve) => {
+    collection.find().toArray((err, items) => {
+      signature_list = items;
+      resolve();
+  })});
 
-    // if response not secure,
-    // response became this.danger_message
+  // compare signature and response
+  for(var signature of signature_list){
+    var is_secure = (response.indexOf(signature.string) === -1);
+
     if(!is_secure){
-      response = this.danger_message;
-      break;
+      return config.danger_message;
     }
   }
-
   return response;
 }
 
 
 module.exports = {
   // message used denger_message
-  denger_message: 'This site is danger !',
   string: checkString
 };
