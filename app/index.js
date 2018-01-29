@@ -32,7 +32,7 @@ proxy.intercept({
 
   /* database transaction */
   await new Promise((resolve) => {
-    mongo.connect(config.mongo.url, async (err, db) => {
+    mongo.connect(config.mongo.url, async (err, client) => {
       // check error
       if(err){
         console.log(err);
@@ -40,10 +40,10 @@ proxy.intercept({
       }
 
       // connect to collenction
-      var collection = db.collection("log");
+      var db = client.db("test");
 
       // insert response
-      await collection.insertOne(req, (error, result) => {
+      await db.collection('log').insertOne(req, (error, result) => {
         // check error
         if(err){
           console.log(err);
@@ -52,10 +52,10 @@ proxy.intercept({
       });
 
       // check response that is secure
-      resp.string = await filter.string(res, db);
+      resp.string = await filter.string(res, client);
 
       // after treatment
-      db.close();
+      client.close();
       resolve();
     });
   });

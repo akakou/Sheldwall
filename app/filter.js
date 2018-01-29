@@ -6,21 +6,19 @@
 */
 'use strict'
 
-var mongo = require("mongodb").MongoClient;
-
 var config = require('./config');
 
 
 /* filter site with response text */
-async function checkString(response, db){
+async function checkString(response, client){
   // check response danger
   var signature_list = [];
-  var collection = db.collection("signature");
+  var db = client.db('test');
   var is_secure = true;
 
   /* get all signature from database */
   await new Promise((resolve) => {
-    collection.find().toArray((err, items) => {
+    db.collection('signature').find().toArray((err, items) => {
       signature_list = items;
       resolve();
   })});

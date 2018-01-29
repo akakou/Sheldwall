@@ -52,7 +52,7 @@ function update() {
     }
 
     /* add signature log to mongodb */
-    mongo.connect(config.mongo.url, async (err, db) => {
+    mongo.connect(config.mongo.url, async (err, client) => {
       // check error
       if(err){
         console.log(err);
@@ -60,7 +60,7 @@ function update() {
       }
 
       // connect to collenction
-      var collection = db.collection('signature');
+      var db = client.db('test');
 
       /* insert signature data to mongodb */
       for(var file of file_list){
@@ -69,7 +69,7 @@ function update() {
         var signature = JSON.parse(file);
 
         // insert response
-        await collection.insertOne(signature, () => {
+        await db.collenction('signature').insertOne(signature, () => {
           // check error
           if(err){
             console.log(err);
@@ -81,7 +81,7 @@ function update() {
       }
 
       // close database connection
-      db.close();
+      client.close();
     });
   })();
 
