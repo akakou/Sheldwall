@@ -1,0 +1,101 @@
+/*
+ *
+ * -- figure TABLE WRAPPER --
+ * This element wraps up all the figure table elements
+ */
+ .figure-tables,
+ .information {
+    max-width: 980px;
+    margin: 0 auto;
+ }
+.figure-tables {
+    margin-bottom: 3.125em;
+    text-align: center;
+}
+
+/*
+ * -- figure TABLE  --
+ * Every figure table has the .figure-table class
+ */
+.figure-table {
+    border: 1px solid #ddd;
+    margin: 0 0.5em 2em;
+    padding: 0 0 3em;
+}
+
+/*
+ * -- figure TABLE HEADER COLORS --
+ * Choose a different color based on the type of figure table.
+ */
+.figure-table-access .figure-table-header {
+    background: #519251;
+}
+
+.figure-table-block .figure-table-header {
+    background: #dc143c;
+}
+
+.figure-table-biz .figure-table-header {
+    background: #2c4985;
+}
+
+
+/*
+ * -- figure TABLE HEADER --
+ * By default, a header is black/white, and has some styles for its <h2> name.
+ */
+.figure-table-header {
+    background: #111;
+    color: #fff;
+}
+    .figure-table-header h2 {
+        margin: 0;
+        padding-top: 2em;
+        font-size: 1em;
+        font-weight: normal;
+
+    }
+
+
+/*
+ * -- figure TABLE PRICE --
+ * Styles for the price and the corresponding <span>per month</span>
+ */
+.figure-table-figure {
+    font-size: 6em;
+    margin: 0.2em 0 0;
+    font-weight: 100;
+}
+    .figure-table-figure span {
+        display: block;
+        text-transform: uppercase;
+        font-size: 0.2em;
+        padding-bottom: 2em;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.5);
+        *color: #fff;
+    }
+
+
+
+/*
+ * -- figure TABLE LIST --
+ * Each figure table has a <ul> which is denoted by the .figure-table-list class
+ */
+.figure-table-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+
+/*
+ * -- figure TABLE LIST ELEMENTS --
+ * Styles for the individual list elements within each figure table
+ */
+.figure-table-list li {
+    padding: 0.8em 0;
+    background: #f7f7f7;
+    border-bottom: 1px solid #e7e7e7;
+}
