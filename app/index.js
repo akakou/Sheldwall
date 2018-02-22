@@ -18,6 +18,7 @@ var config = require('./config');
 var filter = require('./filter');
 var update = require('./update');
 
+var sha256 = require("sha256");
 
 
 process.on('unhandledRejection', console.dir);
@@ -69,7 +70,6 @@ proxy.intercept({
 });
 
 
-
 var name = 'username';
 var password = 'pass';
 
@@ -82,7 +82,7 @@ app.set('view engine', 'ejs');
 app.get("/", function(req, res) {
   var credential = auth(req);
 
-  if (!credential || credential.name !== name || credential.pass !== password) {
+  if (!credential || credential.name !== config.auth.name || sha256(credential.pass) !== config.auth.password) {
     res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
     res.end('Access denied');
   } else {
@@ -91,6 +91,7 @@ app.get("/", function(req, res) {
 });
 
 server.listen(8080);
+
 /* console log */
 console.log('Server running at https://localhost:' + config.port);
 
