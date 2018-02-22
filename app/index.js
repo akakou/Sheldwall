@@ -81,12 +81,21 @@ app.set('view engine', 'ejs');
 
 app.get("/", function(req, res) {
   var credential = auth(req);
+  var count = 0;
+  var ary = {
+    ary: {
+      'access': ['1', '2', '3'],
+      'block': [],
+      'destination': [],
+      'source': []
+    }
+  };
 
   if (!credential || credential.name !== config.auth.name || sha256(credential.pass) !== config.auth.password) {
     res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
     res.end('Access denied');
   } else {
-    res.render('analytics', {});
+    res.render('analytics', ary);
   }
 });
 

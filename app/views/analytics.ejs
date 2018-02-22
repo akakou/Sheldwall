@@ -124,10 +124,58 @@
   </p>
 </div>
 
-<div id="access-count"></div>
-<div id="destionation-count"></div>
-<div id="source-ip"></div>
-<div id="destionation-ip"></div>
+
+<div id="access-count">
+  <% var count = 0; %>
+  <% ary.access.forEach(function (value) { %>
+    <input type="hidden"
+      id="<%= 'access-' + count %>"
+      value="<%= value %>"
+    >
+    </input>
+    <% count++ %>
+  <% }); %>
+</div>
+
+
+<div id="block-count">
+  <% var count = 0; %>
+  <% ary.access.forEach(function (value) { %>
+    <input type="hidden"
+      id="<%= 'block-' + count %>"
+      value="<%= value %>"
+    >
+    </input>
+    <% count++ %>
+  <% }); %>
+</div>
+
+
+<div id="source-ip">
+  <% var count = 0; %>
+  <% ary.access.forEach(function (value) { %>
+    <input type="hidden"
+      id="<%= 'source-' + count %>"
+      value="<%= value %>"
+    >
+    </input>
+    <% count++ %>
+  <% }); %>
+</div>
+
+
+<div id="destionation-ip">
+  <% var count = 0; %>
+  <% ary.access.forEach(function (value) { %>
+    <input type="hidden"
+      id="<%= 'destionation-' + count %>"
+      value="<%= value %>"
+    >
+    </input>
+    <% count++ %>
+  <% }); %>
+</div>
+
 
 </body>
 </html>
