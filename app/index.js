@@ -9,22 +9,23 @@
 var hoxy = require('hoxy');
 var mongo = require("mongodb").MongoClient;
 
+var https = require('https');
+var auth = require('basic-auth');
+var express = require("express");
+var app = express();
+
 var config = require('./config');
 var filter = require('./filter');
 var update = require('./update');
 
-var express = require("express");
-var app = express();
 
 
 process.on('unhandledRejection', console.dir);
-
 
 /* run proxy server */
 var proxy = hoxy.createServer({
   certAuthority: config.ssl,
 }).listen(config.port);
-
 
 /* call when proxy get request */
 proxy.intercept({
@@ -67,14 +68,29 @@ proxy.intercept({
   return;
 });
 
-var server = app.listen(3000, function(){
-  console.log('Start analytics site !');
+
+
+var name = 'username';
+var password = 'pass';
+
+
+var server = https.createServer(config.ssl, app);
+
+app.use('/static', express.static(__dirname + '/static'));
+app.set('view engine', 'ejs');
+
+app.get("/", function(req, res) {
+  var credential = auth(req);
+
+  if (!credential || credential.name !== name || credential.pass !== password) {
+    res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
+    res.end('Access denied');
+  } else {
+    res.render('analytics', {});
+  }
 });
 
-app.get('analytics', function(req, res, next){
-  
-});
-
+server.listen(8080);
 /* console log */
 console.log('Server running at https://localhost:' + config.port);
 

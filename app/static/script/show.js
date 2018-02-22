@@ -25,7 +25,7 @@ function show_access_count() {
     data: {
       labels: MONTHS,
       datasets: [{
-        label: 'ACCESS COUNT',
+        label: 'Access Count / Month',
         backgroundColor: 'rgb(81,146,81)',
         borderColor: 'rgb(81,146,81)',
         data: [
@@ -90,7 +90,7 @@ function show_access_count() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Value'
+            labelString: 'Count'
           }
         }]
       }
@@ -128,7 +128,7 @@ function show_access_block() {
     data: {
       labels: MONTHS,
       datasets: [{
-        label: "My First dataset",
+        label: "Block Count / Month",
         backgroundColor: window.chartColors.red,
         borderColor: window.chartColors.red,
         data: [
@@ -193,7 +193,7 @@ function show_access_block() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Value'
+            labelString: 'Count'
           }
         }]
       }
@@ -216,7 +216,7 @@ function show_access_source() {
   var barChartData = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [{
-      label: 'Dataset 2',
+      label: 'Source IP',
       backgroundColor: color('rgb(44,73,133)').alpha(0.5).rgbString(),
       borderColor: 'rgb(44,73,133)',
       borderWidth: 1,
@@ -242,6 +242,22 @@ function show_access_source() {
     type: 'bar',
     data: barChartData,
     options: {
+      scales: {
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Month'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Count'
+          }
+        }]
+      },
       responsive: true,
       legend: {
         position: 'top',
@@ -267,7 +283,7 @@ function show_access_destination() {
   var barChartData = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [{
-      label: 'Dataset 2',
+      label: 'Destination IP',
       backgroundColor: color(window.chartColors.black).alpha(0.5).rgbString(),
       borderColor: window.chartColors.black,
       borderWidth: 1,
@@ -300,6 +316,22 @@ function show_access_destination() {
       title: {
         display: true,
         text: ''
+      },
+      scales: {
+        xAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Month'
+          }
+        }],
+        yAxes: [{
+          display: true,
+          scaleLabel: {
+            display: true,
+            labelString: 'Count'
+          }
+        }]
       }
     }
   });

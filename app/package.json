@@ -20,9 +20,12 @@
   },
   "homepage": "https://github.com/akakou/Sheldwall#readme",
   "dependencies": {
+    "basic-auth": "^2.0.0",
+    "ejs": "^2.5.7",
     "express": "^4.16.1",
     "hoxy": "^3.2.2",
     "http-proxy": "^1.16.2",
+    "https": "^1.0.0",
     "mongo": "^0.1.0",
     "simple-git": "^1.80.1"
   }
