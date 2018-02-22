@@ -9,9 +9,13 @@
 var hoxy = require('hoxy');
 var mongo = require("mongodb").MongoClient;
 
-var config = require('./config')
-var filter = require('./filter')
-var update = require('./update')
+var config = require('./config');
+var filter = require('./filter');
+var update = require('./update');
+
+var express = require("express");
+var app = express();
+
 
 process.on('unhandledRejection', console.dir);
 
@@ -63,6 +67,13 @@ proxy.intercept({
   return;
 });
 
+var server = app.listen(3000, function(){
+  console.log('Start analytics site !');
+});
+
+app.get('analytics', function(req, res, next){
+  
+});
 
 /* console log */
 console.log('Server running at https://localhost:' + config.port);
