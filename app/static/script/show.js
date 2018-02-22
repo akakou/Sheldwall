@@ -28,39 +28,7 @@ function show_access_count() {
         label: 'Access Count / Month',
         backgroundColor: 'rgb(81,146,81)',
         borderColor: 'rgb(81,146,81)',
-        data: [
-          0,
-          50,
-          100,
-          50,
-          0,
-          50,
-          0,
-          50,
-          100,
-          50,
-          0,
-          50,
-          0,
-          50,
-          100,
-          50,
-          0,
-          50,
-          100,
-          0,
-          50,
-          100,
-          50,
-          0,
-          50,
-          0,
-          50,
-          100,
-          50,
-          100,
-          50
-        ],
+        data: get_data_list('access'),
         fill: false,
       }]
     },
@@ -87,6 +55,10 @@ function show_access_count() {
           }
         }],
         yAxes: [{
+          ticks: {
+            min: 0,
+            stepSize: 1
+          },
           display: true,
           scaleLabel: {
             display: true,
@@ -131,39 +103,7 @@ function show_access_block() {
         label: "Block Count / Month",
         backgroundColor: window.chartColors.red,
         borderColor: window.chartColors.red,
-        data: [
-          0,
-          50,
-          10,
-          50,
-          0,
-          50,
-          0,
-          50,
-          100,
-          50,
-          0,
-          5,
-          0,
-          50,
-          10,
-          50,
-          0,
-          50,
-          10,
-          0,
-          50,
-          100,
-          50,
-          0,
-          5,
-          0,
-          50,
-          100,
-          50,
-          10,
-          50
-        ],
+        data: get_data_list('block'),
         fill: false,
       }]
     },
@@ -190,6 +130,10 @@ function show_access_block() {
           }
         }],
         yAxes: [{
+          ticks: {
+            min: 0,
+            stepSize: 1
+          },
           display: true,
           scaleLabel: {
             display: true,
@@ -220,19 +164,7 @@ function show_access_source() {
       backgroundColor: color('rgb(44,73,133)').alpha(0.5).rgbString(),
       borderColor: 'rgb(44,73,133)',
       borderWidth: 1,
-      data: [
-        5,
-        10,
-        5,
-        10,
-        10,
-        5,
-        10,
-        5,
-        10,
-        5,
-        0
-      ]
+      data: get_data_list('source')
     }]
 
   };
@@ -251,6 +183,10 @@ function show_access_source() {
           }
         }],
         yAxes: [{
+          ticks: {
+            min: 0,
+            stepSize: 1
+          },
           display: true,
           scaleLabel: {
             display: true,
@@ -287,19 +223,7 @@ function show_access_destination() {
       backgroundColor: color(window.chartColors.black).alpha(0.5).rgbString(),
       borderColor: window.chartColors.black,
       borderWidth: 1,
-      data: [
-        1,
-        12,
-        12,
-        20,
-        10,
-        5,
-        10,
-        5,
-        10,
-        5,
-        0
-      ]
+      data: get_data_list('source')
     }]
 
   };
@@ -326,6 +250,10 @@ function show_access_destination() {
           }
         }],
         yAxes: [{
+          ticks: {
+            min: 0,
+            stepSize: 1
+          },
           display: true,
           scaleLabel: {
             display: true,
@@ -336,6 +264,27 @@ function show_access_destination() {
     }
   });
 
+
   ctx.name = 'chart';
   location.href = '#canvas';
+}
+
+function get_data_list(type){
+  var result = [];
+  var count = 0;
+
+  while (true){
+    var tag = document.getElementById(type + '-' + count);
+    
+    if (!tag){
+      break;  
+    
+    }else{
+      tag = Number(tag.value);
+      result.push(tag);
+      count ++;
+    }
+  }
+
+  return result;
 }
