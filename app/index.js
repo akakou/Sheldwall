@@ -34,7 +34,7 @@ proxy.intercept({
   as: 'string'
 }, async (req, resp, cycle) => {
   console.log('access from ' + req.hostname);
-   var res = resp.string;
+  var res = resp.string;
 
   /* database transaction */
   await new Promise((resolve) => {
@@ -70,33 +70,89 @@ proxy.intercept({
 });
 
 
-var name = 'username';
-var password = 'pass';
-
 
 var server = https.createServer(config.ssl, app);
 
 app.use('/static', express.static(__dirname + '/static'));
 app.set('view engine', 'ejs');
 
-app.get("/", function(req, res) {
+app.get("/", async (req, res) => {
   var credential = auth(req);
   var count = 0;
+
+  var access_list = [];
+
   var ary = {
-    ary: {
-      'access': ['1', '2', '3'],
-      'block': [],
-      'destination': [],
-      'source': []
-    }
+    access: [],
+    block: [],
+    destination: [],
+    source: []
   };
 
+  var unsorted_ary = {
+    access: [],
+    block: [],
+    destination: [],
+    source: []
+  };
+
+  await new Promise((resolve) => {
+    mongo.connect(config.mongo.url, async (err, client) => {
+      var db = client.db('test');
+
+      /* get all signature from database */
+      await new Promise((resolve) => {
+        db.collection('log').find().toArray((err, items) => {
+          access_list = items;
+          var access_list_tmp = [];
+          
+          for (var items of access_list){
+            access_list_tmp.push(items._data.hostname);
+          }
+
+          unsorted_ary.access = access_list_tmp;
+
+          resolve();
+        });
+      });
+
+      // sort and remove duplication
+      for (var access of unsorted_ary.access){
+        var hit_count = 0;
+        var hit_index = 0;
+
+        while(true){
+          hit_index = unsorted_ary.access.indexOf(access);
+          
+          if (hit_index != -1){
+            hit_count ++;
+            unsorted_ary.access.splice(hit_index, 1);
+
+          }else{
+            break;
+          }
+        }
+        
+        ary.access.push({host:access, count:hit_count});
+      }
+
+      resolve();
+    });
+  });
+
+  console.log(ary);
+
+
+  /*
   if (!credential || credential.name !== config.auth.name || sha256(credential.pass) !== config.auth.password) {
     res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
     res.end('Access denied');
   } else {
     res.render('analytics', ary);
   }
+
+  */
+
 });
 
 server.listen(8080);
