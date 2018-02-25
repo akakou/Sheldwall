@@ -28,10 +28,10 @@ async function checkString(response, client){
     var is_secure = (response.indexOf(signature.string) === -1);
 
     if(!is_secure){
-      return config.danger_message;
+      return false;
     }
   }
-  return response;
+  return true;
 }
 
 

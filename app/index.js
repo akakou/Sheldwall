@@ -40,26 +40,41 @@ proxy.intercept({
   /* database transaction */
   await new Promise((resolve) => {
     mongo.connect(config.mongo.url, async (err, client) => {
+
+      var log = {
+        response: resp,
+        request: req,
+        time: new Date(),
+        is_block: false
+      };
+
+
       // check error
       if(err){
         console.log(err);
         return;
       }
 
+      // check response that is secure
+      var is_secure = await filter.string(res, client);
+      
+      if (!is_secure){
+        resp.string = config.danger_message;
+      }
+
+      log.is_block = is_secure;
+
       // connect to collenction
       var db = client.db("test");
 
       // insert response
-      await db.collection('log').insertOne(req, (error, result) => {
+      await db.collection('log').insertOne(log, (error, result) => {
         // check error
         if(err){
           console.log(err);
           return;
         }
       });
-
-      // check response that is secure
-      resp.string = await filter.string(res, client);
 
       // after treatment
       client.close();
@@ -71,24 +86,23 @@ proxy.intercept({
 });
 
 
-
 var server = https.createServer(config.ssl, app);
 
 app.use('/static', express.static(__dirname + '/static'));
 app.set('view engine', 'ejs');
 
+
 app.get("/", async (req, res) => {
   analytics.access();
   var credential = auth(req);
 
-  /*
   if (!credential || credential.name !== config.auth.name || sha256(credential.pass) !== config.auth.password) {
     res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
     res.end('Access denied');
   } else {
-    res.render('analytics', ary);
+    res.end('Access permitted');
+    //res.render('analytics', ary);
   }
-  */
 });
 
 server.listen(8080);
