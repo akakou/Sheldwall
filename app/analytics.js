@@ -128,7 +128,7 @@ async function analytics_time_site(){
           }
         }
         
-        ary.destination.push({destination:destination, count:hit_count});
+        ary.destination.push({hostname:destination, count:hit_count});
       }
 
       /*
@@ -156,7 +156,6 @@ async function analytics_time_site(){
     });
   });
 
-  console.log(ary);
   return ary;
 
 }

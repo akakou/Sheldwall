@@ -5,18 +5,49 @@ function show_access_count() {
 
   var day = new Date();
   MONTHS = [];
+  var a_day = 86400000;
+  var thirty_days = a_day * 30;
 
-  for (count = 0; count <= 30; count++) {
+  day = new Date(day.getTime() - thirty_days)
+  var data = [];
+
+  for (var count = 0; count <= 30; count++) {
     if (day.getDate() === 1 || count === 0) {
       day_string = day.getMonth() + '/' + day.getDate();
     } else {
       day_string = day.getDate();
     }
+    data.push({date:day.getDate(), month:day.getMonth(), is_unchanged:true});
 
     MONTHS.push(day_string);
-    day.setDate(day.getDate() + 1);
+    day = new Date(day.getTime() + a_day);
+    console.log(day)
+  }
+  
+
+
+  var access_count = get_data_list('access-count');
+
+  for(var access of access_count){
+    var access_date = new Date(access.data);
+
+    var change_index = data.findIndex(function(element, index, array){
+      console.log(element.date + ':' + access_date.getDate())
+      console.log(element.month + ':' + access_date.getMonth())
+      return element.date == access_date.getDate() && element.month == (access_date.getMonth());
+    });
+    console.log(change_index)
+    data[change_index] = {data:access.count, is_unchanged:false};
   }
 
+
+  for(var index in data) {
+    if(data[index].is_unchanged){
+      data[index] = 0;
+    }else{
+      data[index] = data[index].data;
+    }
+  }
 
 
   var config = {
@@ -28,7 +59,7 @@ function show_access_count() {
         label: 'Access Count / Month',
         backgroundColor: 'rgb(81,146,81)',
         borderColor: 'rgb(81,146,81)',
-        data: get_data_list('access'),
+        data: data,
         fill: false,
       }]
     },
@@ -79,18 +110,50 @@ function show_access_block() {
   var remove = document.getElementById('charts');
   remove.innerHTML = "<canvas id=\"canvas\" name=\"canvas\"></canvas>"
 
+
   var day = new Date();
   MONTHS = [];
+  var a_day = 86400000;
+  var thirty_days = a_day * 30;
 
-  for (count = 0; count <= 30; count++) {
+  day = new Date(day.getTime() - thirty_days)
+  var data = [];
+
+  for (var count = 0; count <= 30; count++) {
     if (day.getDate() === 1 || count === 0) {
       day_string = day.getMonth() + '/' + day.getDate();
     } else {
       day_string = day.getDate();
     }
+    data.push({date:day.getDate(), month:day.getMonth(), is_unchanged:true});
 
     MONTHS.push(day_string);
-    day.setDate(day.getDate() + 1);
+    day = new Date(day.getTime() + a_day);
+  }
+  
+
+
+  var access_count = get_data_list('block-count');
+
+  for(var access of access_count){
+    var access_date = new Date(access.data);
+
+    var change_index = data.findIndex(function(element, index, array){
+      console.log(element.date + ':' + access_date.getDate())
+      console.log(element.month + ':' + access_date.getMonth())
+      return element.date == access_date.getDate() && element.month == (access_date.getMonth());
+    });
+    console.log(change_index)
+    data[change_index] = {data:access.count, is_unchanged:false};
+  }
+
+
+  for(var index in data) {
+    if(data[index].is_unchanged){
+      data[index] = 0;
+    }else{
+      data[index] = data[index].data;
+    }
   }
 
 
@@ -103,7 +166,7 @@ function show_access_block() {
         label: "Block Count / Month",
         backgroundColor: window.chartColors.red,
         borderColor: window.chartColors.red,
-        data: get_data_list('block'),
+        data: data,
         fill: false,
       }]
     },
@@ -151,20 +214,30 @@ function show_access_block() {
 }
 
 
-function show_access_source() {
+function show_access_destination() {
   var remove = document.getElementById('charts');
   remove.innerHTML = "<canvas id=\"canvas\" name=\"canvas\"></canvas>"
+  
+  var destination_data = get_data_list('access-destionation')
+  var host_name_list = [];
+  var data = [];
+
+  for(var access of destination_data){
+    host_name_list.push(access.data);
+    data.push(access.count);
+  }
+  
 
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var color = Chart.helpers.color;
   var barChartData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: host_name_list,
     datasets: [{
-      label: 'Source IP',
+      label: 'Destination IP',
       backgroundColor: color('rgb(44,73,133)').alpha(0.5).rgbString(),
       borderColor: 'rgb(44,73,133)',
       borderWidth: 1,
-      data: get_data_list('source')
+      data: data
     }]
 
   };
@@ -210,20 +283,29 @@ function show_access_source() {
 }
 
 
-function show_access_destination() {
+function show_block_destination() {
   var remove = document.getElementById('charts');
   remove.innerHTML = "<canvas id=\"canvas\" name=\"canvas\"></canvas>"
 
+  var destination_data = get_data_list('access-destionation')
+  var host_name_list = [];
+  var data = [];
+
+  for(var access of destination_data){
+    host_name_list.push(access.data);
+    data.push(access.count);
+  }
+  
   var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   var color = Chart.helpers.color;
   var barChartData = {
-    labels: ["January", "February", "March", "April", "May", "June", "July"],
+    labels: host_name_list,
     datasets: [{
       label: 'Destination IP',
       backgroundColor: color(window.chartColors.black).alpha(0.5).rgbString(),
       borderColor: window.chartColors.black,
       borderWidth: 1,
-      data: get_data_list('source')
+      data: data
     }]
 
   };
@@ -280,8 +362,9 @@ function get_data_list(type){
       break;  
     
     }else{
-      tag = Number(tag.value);
-      result.push(tag);
+      var split_tag = tag.value.split(',');
+      split_tag[1] = Number(split_tag[1]);
+      result.push({data:split_tag[0], count:split_tag[1]});
       count ++;
     }
   }

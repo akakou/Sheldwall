@@ -93,15 +93,16 @@ app.set('view engine', 'ejs');
 
 
 app.get("/", async (req, res) => {
-  analytics.access();
+  var template_data = await analytics.access();
   var credential = auth(req);
 
   if (!credential || credential.name !== config.auth.name || sha256(credential.pass) !== config.auth.password) {
     res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
     res.end('Access denied');
   } else {
-    res.end('Access permitted');
-    //res.render('analytics', ary);
+    //res.end('Access permitted');
+    console.log(template_data);
+    res.render('analytics', template_data);
   }
 });
 

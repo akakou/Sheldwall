@@ -59,7 +59,7 @@
     <div class="pure-u-1">
       <div class="figure-table figure-table-block">
         <div class="figure-table-header">
-          <h2>Brock</h2>
+          <h2>Block Count</h2>
 
           <span class="figure-table-figure">
             100 <span>per month</span>
@@ -73,21 +73,7 @@
     <div class="pure-u-1">
       <div class="figure-table figure-table-biz figure-table-selected">
         <div class="figure-table-header">
-          <h2>Source</h2>
-
-          <span class="figure-table-figure">
-            192.168.1.0  <span>is the most accessing machine</span>
-          </span>
-        </div>
-
-        <button class="button-choose pure-button" onclick="show_access_source()">Choose</button>
-      </div>
-    </div>
-
-    <div class="pure-u-1">
-      <div class="figure-table figure-table-enterprise">
-        <div class="figure-table-header">
-          <h2>Destination</h2>
+          <h2>Accessed Destination</h2>
 
           <span class="figure-table-figure">
             google.com <span>is the most accessed website</span>
@@ -95,6 +81,20 @@
         </div>
 
         <button class="button-choose pure-button" onclick="show_access_destination()">Choose</button>
+      </div>
+    </div>
+
+    <div class="pure-u-1">
+      <div class="figure-table figure-table-enterprise">
+        <div class="figure-table-header">
+          <h2>Blocked Destination</h2>
+
+          <span class="figure-table-figure">
+            google.com <span>is the most blocked website</span>
+          </span>
+        </div>
+
+        <button class="button-choose pure-button" onclick="show_block_destination()">Choose</button>
       </div>
     </div>
   </div> <!-- end figure-tables -->
@@ -127,55 +127,52 @@
 
 <div id="access-count">
   <% var count = 0; %>
-  <% access.forEach(function (value) { %>
+  <% time.forEach(function (value) { %>
     <input type="hidden"
-      id="<%= 'access-' + count %>"
-      value="<%= value %>"
+      id="<%= 'access-count-' + count %>"
+      value="<%= value.time + ',' + value.count %>"
     >
     </input>
     <% count++ %>
   <% }); %>
 </div>
 
+<div id="access-destionation">
+  <% var count = 0; %>
+  <% destination.forEach(function (value) { %>
+    <input type="hidden"
+      id="<%= 'access-destionation-' + count %>"
+      value="<%= value.hostname + ',' + value.count %>"
+    >
+    </input>
+    <% count++ %>
+  <% }); %>
+</div>
 
 <div id="block-count">
   <% var count = 0; %>
-  <% access.forEach(function (value) { %>
+  <% block_time.forEach(function (value) { %>
     <input type="hidden"
-      id="<%= 'block-' + count %>"
-      value="<%= value %>"
+      id="<%= 'block-count-' + count %>"
+      value="<%= value.time + ',' + value.count %>"
     >
     </input>
     <% count++ %>
   <% }); %>
 </div>
 
-
-<!--
-<div id="source-ip">
+<div id="block-destination">
   <% var count = 0; %>
-  <% access.forEach(function (value) { %>
+  <% block_destination.forEach(function (value) { %>
     <input type="hidden"
-      id="<%= 'source-' + count %>"
-      value="<%= value %>"
+      id="<%= 'block-destination-' + count %>"
+      value="<%= value.hostname + ',' + value.count %>"
     >
     </input>
     <% count++ %>
   <% }); %>
 </div>
--->
 
-<div id="destionation-ip">
-  <% var count = 0; %>
-  <% access.forEach(function (value) { %>
-    <input type="hidden"
-      id="<%= 'destionation-' + count %>"
-      value="<%= value %>"
-    >
-    </input>
-    <% count++ %>
-  <% }); %>
-</div>
 <script>
 data()
 </script>>
