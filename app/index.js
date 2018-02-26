@@ -44,7 +44,7 @@ proxy.intercept({
       var log = {
         response: resp,
         request: req,
-        time: new Date(),
+        time: new Date().getTime(),
         is_block: false
       };
 

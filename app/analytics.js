@@ -5,6 +5,10 @@ var config = require('./config');
 
 async function analytics_time_site(){
   var count = 0;
+  var a_day = 86400000;
+  var thirty_days = a_day * 30;
+  var now = new Date();
+  var thirty_days_ago = now.getTime() - thirty_days;
 
   var time_list = [];
 
@@ -13,7 +17,6 @@ async function analytics_time_site(){
     destination: [],
     block_time: [],
     block_destination: []
-    //source: []
   };
 
   var unsorted_ary = {
@@ -21,7 +24,6 @@ async function analytics_time_site(){
     destination: [],
     block_time: [],
     block_destination: []
-    //source: []
   };
 
   await new Promise((resolve) => {
@@ -30,16 +32,16 @@ async function analytics_time_site(){
 
       /* get all signature from database */
       await new Promise((resolve) => {
-        db.collection('log').find().toArray((err, items) => {
+        db.collection('log').find({time: { $gt: thirty_days_ago }}).toArray((err, items) => {
 
           for (var item of items){
+            item.time = new Date(item.time);
             item.time.setMilliseconds(0);
             item.time.setSeconds(0);
             item.time.setMinutes(0);
             item.time.setHours(0);
 
             unsorted_ary.time.push(item.time.toString());
-            //unsorted_ary.source.push(item.request._data.hostname);
             unsorted_ary.destination.push(item.request._data.hostname);
 
             if (!item.is_secure){

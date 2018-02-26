@@ -48,7 +48,7 @@
           <h2>Access Count</h2>
 
           <span class="figure-table-figure">
-            100 <span>per month</span>
+            <div id="all_access_count"></div> <span>per month</span>
           </span>
         </div>
 
@@ -62,7 +62,7 @@
           <h2>Block Count</h2>
 
           <span class="figure-table-figure">
-            100 <span>per month</span>
+            <div id="all_block_count"></div> <span>per month</span>
           </span>
         </div>
 
@@ -76,7 +76,7 @@
           <h2>Accessed Destination</h2>
 
           <span class="figure-table-figure">
-            google.com <span>is the most accessed website</span>
+            <div style="word-wrap: break-word; font-size: 70%; " id="most_accessed_destination">　</div> <span>is the most accessed website</span>
           </span>
         </div>
 
@@ -90,7 +90,7 @@
           <h2>Blocked Destination</h2>
 
           <span class="figure-table-figure">
-            google.com <span>is the most blocked website</span>
+            <div style="word-wrap: break-word; font-size: 70%; " id="most_blocked_destination"></div> <span>is the most blocked website</span>
           </span>
         </div>
 
@@ -174,7 +174,10 @@
 </div>
 
 <script>
-data()
+  show_all_access_count();
+  show_all_block_count();
+  show_most_accessed_destination();
+  show_most_blocked_destination();
 </script>>
 
 </body>

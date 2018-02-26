@@ -1,4 +1,65 @@
 var ctx = null;
+
+function show_all_access_count(){
+  var access_count = get_data_list('access-count');
+  var all_count = 0;
+
+  for(var access of access_count){
+    all_count = all_count + access.count;
+  }
+
+  var all_access_counter = document.getElementById('all_access_count');
+  all_access_counter.innerHTML = all_count;
+}
+
+function show_all_block_count(){
+  var access_count = get_data_list('block-count');
+  var all_count = 0;
+
+  for(var access of access_count){
+    all_count = all_count + access.count;
+  }
+
+  var all_access_counter = document.getElementById('all_block_count');
+  all_access_counter.innerHTML = all_count;
+}
+
+function show_most_accessed_destination(){
+  var access_count = get_data_list('access-destionation');
+
+  var most_accessed = {
+    data: '', count:0
+  }
+  console.log(access_count)
+  for(var access of access_count){
+    if(access.count >= most_accessed.count){
+      most_accessed = access  
+    }
+  }
+
+
+  var most_accessed_destination = document.getElementById('most_accessed_destination');
+  most_accessed_destination.innerHTML = most_accessed.data;
+}
+
+function show_most_blocked_destination(){
+  var access_count = get_data_list('block-destination');
+
+  var most_blocked = {
+    data: '', count:0
+  }
+  console.log(access_count)
+  for(var access of access_count){
+    if(access.count >= most_blocked.count){
+      most_blocked = access;
+    }
+  }
+
+
+  var most_blocked_destination = document.getElementById('most_blocked_destination');
+  most_blocked_destination.innerHTML = most_blocked.data;
+}
+
 function show_access_count() {
   var remove = document.getElementById('charts');
   remove.innerHTML = "<canvas id=\"canvas\" name=\"canvas\"></canvas>"
@@ -41,13 +102,17 @@ function show_access_count() {
   }
 
 
+  var all_access_data = 0;
+
   for(var index in data) {
     if(data[index].is_unchanged){
       data[index] = 0;
     }else{
       data[index] = data[index].data;
+      all_access_data = all_access_data + data[index];
     }
   }
+
 
 
   var config = {
@@ -233,7 +298,7 @@ function show_access_destination() {
   var barChartData = {
     labels: host_name_list,
     datasets: [{
-      label: 'Destination IP',
+      label: 'Destination Host',
       backgroundColor: color('rgb(44,73,133)').alpha(0.5).rgbString(),
       borderColor: 'rgb(44,73,133)',
       borderWidth: 1,
@@ -252,7 +317,7 @@ function show_access_destination() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Month'
+            labelString: 'Host Name'
           }
         }],
         yAxes: [{
@@ -301,7 +366,7 @@ function show_block_destination() {
   var barChartData = {
     labels: host_name_list,
     datasets: [{
-      label: 'Destination IP',
+      label: 'Destination Host',
       backgroundColor: color(window.chartColors.black).alpha(0.5).rgbString(),
       borderColor: window.chartColors.black,
       borderWidth: 1,
@@ -328,7 +393,7 @@ function show_block_destination() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Month'
+            labelString: 'Host Name'
           }
         }],
         yAxes: [{
