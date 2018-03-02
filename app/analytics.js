@@ -3,167 +3,90 @@ var mongo = require("mongodb").MongoClient;
 var config = require('./config');
 
 
-async function analytics_time_site(){
-  var count = 0;
-  var a_day = 86400000;
-  var thirty_days = a_day * 30;
+const A_DAY = 86400000;
+const THIRTY_DAYS = A_DAY * 30;
+
+
+
+/* analytics data */
+async function analytics(){
+  /* sort access time and block time */
+  function sort(data_list){
+    var result = [];
+
+    for (var data of data_list){
+      // initialize count and index
+      var hit_count = 0;
+      var hit_index = 0;
+
+      while(true){
+        // check hit
+        hit_index = data_list.indexOf(data);
+
+        if (hit_index != -1){
+          // if hit, increment hit_count and delete it from list
+          hit_count ++;
+          data_list.splice(hit_index, 1);
+
+        }else{
+          break;
+        }
+      }
+      // push dict
+      result.push({key:data, count:hit_count});
+    }
+
+    return result;
+  }
+
+
   var now = new Date();
-  var thirty_days_ago = now.getTime() - thirty_days;
+  var THIRTY_DAYS_AGO = now.getTime() - THIRTY_DAYS;
 
-  var time_list = [];
-
-  var ary = {
-    time: [],
-    destination: [],
-    block_time: [],
-    block_destination: []
-  };
-
-  var unsorted_ary = {
-    time: [],
-    destination: [],
-    block_time: [],
-    block_destination: []
-  };
-
-  await new Promise((resolve) => {
-    mongo.connect(config.mongo.url, async (err, client) => {
+  var logs = await new Promise((resolve) => {
+    mongo.connect(config.mongo.url, (err, client) => {
       var db = client.db('test');
 
       /* get all signature from database */
-      await new Promise((resolve) => {
-        db.collection('log').find({time: { $gt: thirty_days_ago }}).toArray((err, items) => {
+      var logs = {
+        access_time: [],      // the time accessed
+        destination: [],      // the destination
+        block_time: [],       // the time blocked
+        block_destination: [] // the destination blocked
+      };
 
-          for (var item of items){
-            item.time = new Date(item.time);
-            item.time.setMilliseconds(0);
-            item.time.setSeconds(0);
-            item.time.setMinutes(0);
-            item.time.setHours(0);
+      db.collection('log').find({time: { $gt: THIRTY_DAYS_AGO }}).toArray((err, items) => {
 
-            unsorted_ary.time.push(item.time.toString());
-            unsorted_ary.destination.push(item.request._data.hostname);
+        for (var item of items){
+          // clear yy:mm:dd:XXXX
+          item.time = new Date(item.time);
+          item.time.setMilliseconds(0);
+          item.time.setSeconds(0);
+          item.time.setMinutes(0);
+          item.time.setHours(0);
 
-            if (!item.is_secure){
-              unsorted_ary.block_destination.push(item.request._data.hostname);
-              unsorted_ary.block_time.push(item.time.toString());
-            }
+          // push access logs
+          logs.access_time.push(item.time.toString());
+          logs.destination.push(item.request._data.hostname);
+
+          if (!item.is_secure){
+            // push destination logs
+            logs.block_destination.push(item.request._data.hostname);
+            logs.block_time.push(item.time.toString());
           }
+        }
 
-          resolve();
-        });
+        resolve(logs);
       });
-
-      // sort and remove duplication
-      for (var time of unsorted_ary.time){
-        var hit_count = 0;
-        var hit_index = 0;
-
-        while(true){
-          hit_index = unsorted_ary.time.indexOf(time);
-          
-          if (hit_index != -1){
-            hit_count ++;
-            unsorted_ary.time.splice(hit_index, 1);
-
-          }else{
-            break;
-          }
-        }
-        
-        ary.time.push({time:time, count:hit_count});
-      }
-
-
-      for (var hostname of unsorted_ary.block_destination){
-        var hit_count = 0;
-        var hit_index = 0;
-
-        while(true){
-          hit_index = unsorted_ary.block_destination.indexOf(hostname);
-          
-          if (hit_index != -1){
-            hit_count ++;
-            unsorted_ary.block_destination.splice(hit_index, 1);
-
-          }else{
-            break;
-          }
-        }
-        
-        ary.block_destination.push({hostname:hostname, count:hit_count});
-      }
-
-      for (var time of unsorted_ary.block_time){
-        var hit_count = 0;
-        var hit_index = 0;
-
-        while(true){
-          hit_index = unsorted_ary.block_time.indexOf(time);
-          
-          if (hit_index != -1){
-            hit_count ++;
-            unsorted_ary.block_time.splice(hit_index, 1);
-
-          }else{
-            break;
-          }
-        }
-        
-        ary.block_time.push({time:time, count:hit_count});
-      }
-
-
-      for (var destination of unsorted_ary.destination){
-        var hit_count = 0;
-        var hit_index = 0;
-
-        while(true){
-          hit_index = unsorted_ary.destination.indexOf(destination);
-          
-          if (hit_index != -1){
-            hit_count ++;
-            unsorted_ary.destination.splice(hit_index, 1);
-
-          }else{
-            break;
-          }
-        }
-        
-        ary.destination.push({hostname:destination, count:hit_count});
-      }
-
-      /*
-      for (var source of unsorted_ary.source){
-        var hit_count = 0;
-        var hit_index = 0;
-
-        while(true){
-          hit_index = unsorted_ary.block.indexOf(source);
-          
-          if (hit_index != -1){
-            hit_count ++;
-            unsorted_ary.source.splice(hit_index, 1);
-
-          }else{
-            break;
-          }
-        }
-        
-        ary.source.push({source:source, count:hit_count});
-      }
-      */
-
-      resolve();
-    });
+    })
   });
 
-  return ary;
+  logs.access_time = sort(logs.access_time);
+  logs.destination = sort(logs.destination);
+  logs.block_time = sort(logs.block_time);
+  logs.block_destination = sort(logs.block_destination);
 
+  return logs;
 }
 
-
-module.exports = {
-  // message used denger_message
-  access: analytics_time_site
-};
+module.exports = analytics;

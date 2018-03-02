@@ -8,11 +8,12 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
+      - "8443:8443"
     command: [sh, -c, npm install && node index.js]
     environment:
       - GIT=https://github.com/akakou-stash/sheld-test-repo
-      - PORT=443
+      - PROXY_PORT=443
+      - WEB_PORT=8443
       - SSL_KEY=/keys/key.pem
       - SSL_CERT=/keys/server.crt
     links:

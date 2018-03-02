@@ -27,7 +27,7 @@ process.on('unhandledRejection', console.dir);
 /* run proxy server */
 var proxy = hoxy.createServer({
   certAuthority: config.ssl,
-}).listen(config.port);
+}).listen(config.port.proxy);
 
 /* call when proxy get request */
 proxy.intercept({
@@ -40,14 +40,13 @@ proxy.intercept({
   /* database transaction */
   await new Promise((resolve) => {
     mongo.connect(config.mongo.url, async (err, client) => {
-
+      // saved log
       var log = {
         response: resp,
         request: req,
         time: new Date().getTime(),
         is_block: false
       };
-
 
       // check error
       if(err){
@@ -57,7 +56,7 @@ proxy.intercept({
 
       // check response that is secure
       var is_secure = await filter.string(res, client);
-      
+
       if (!is_secure){
         resp.string = config.danger_message;
       }
@@ -86,30 +85,33 @@ proxy.intercept({
 });
 
 
-var server = https.createServer(config.ssl, app);
+/* create analytics site server */
+var server = https.createServer(config.ssl, app).listen(config.port.web);
 
+// express setting
 app.use('/static', express.static(__dirname + '/static'));
 app.set('view engine', 'ejs');
 
-
 app.get("/", async (req, res) => {
-  var template_data = await analytics.access();
-  var credential = auth(req);
+  // get analytics data
+  var template_data = await analytics();
 
+  // basic auth
+  var credential = auth(req);
   if (!credential || credential.name !== config.auth.name || sha256(credential.pass) !== config.auth.password) {
+    // access denied
     res.writeHead(401, {'WWW-Authenticate':'Basic realm="secret zone"'});
     res.end('Access denied');
   } else {
-    //res.end('Access permitted');
-    console.log(template_data);
+    // render data and show
     res.render('analytics', template_data);
   }
 });
 
-server.listen(8080);
 
-/* console log */
-console.log('Server running at https://localhost:' + config.port);
+/* show */
+console.log('Proxy server running at https://localhost:' + config.port.proxy);
+console.log('Web server running at https://localhost:' + config.port.web);
 
 /* updating signature loop */
 update();

@@ -28,14 +28,17 @@ var config = {
   },
 
   // port
-  port: process.env.PORT,
+  port: {
+    proxy: process.env.PROXY_PORT,
+    web: process.env.WEB_PORT
+  },
 
   // ssl keys
   ssl: {
     key: fs.readFileSync(__dirname + process.env['SSL_KEY'], 'utf8'),
     cert: fs.readFileSync(__dirname + process.env['SSL_CERT'], 'utf8')
   },
-  
+
   // danger_message
   danger_message: 'This site is danger !'
 };

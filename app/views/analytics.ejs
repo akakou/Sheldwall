@@ -127,10 +127,10 @@
 
 <div id="access-count">
   <% var count = 0; %>
-  <% time.forEach(function (value) { %>
+  <% access_time.forEach(function (value) { %>
     <input type="hidden"
       id="<%= 'access-count-' + count %>"
-      value="<%= value.time + ',' + value.count %>"
+      value="<%= value.key + ',' + value.count %>"
     >
     </input>
     <% count++ %>
@@ -142,7 +142,7 @@
   <% destination.forEach(function (value) { %>
     <input type="hidden"
       id="<%= 'access-destionation-' + count %>"
-      value="<%= value.hostname + ',' + value.count %>"
+      value="<%= value.key + ',' + value.count %>"
     >
     </input>
     <% count++ %>
@@ -154,7 +154,7 @@
   <% block_time.forEach(function (value) { %>
     <input type="hidden"
       id="<%= 'block-count-' + count %>"
-      value="<%= value.time + ',' + value.count %>"
+      value="<%= value.key + ',' + value.count %>"
     >
     </input>
     <% count++ %>
@@ -166,7 +166,7 @@
   <% block_destination.forEach(function (value) { %>
     <input type="hidden"
       id="<%= 'block-destination-' + count %>"
-      value="<%= value.hostname + ',' + value.count %>"
+      value="<%= value.key + ',' + value.count %>"
     >
     </input>
     <% count++ %>
