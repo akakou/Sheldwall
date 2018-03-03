@@ -48,7 +48,7 @@ proxy.intercept({
         response: resp,
         request: req,
         time: new Date().getTime(),
-        is_block: false
+        is_secure: false
       };
 
       // check error
@@ -58,13 +58,11 @@ proxy.intercept({
       }
 
       // check response that is secure
-      var is_secure = await filter.string(res, client);
+      log.is_secure = await filter.string(res, client);
 
-      if (!is_secure){
+      if (!log.is_secure){
         resp.string = config.danger_message;
       }
-
-      log.is_block = is_secure;
 
       // connect to collenction
       var db = client.db("test");

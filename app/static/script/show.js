@@ -352,7 +352,7 @@ function show_block_destination() {
   var remove = document.getElementById('charts');
   remove.innerHTML = "<canvas id=\"canvas\" name=\"canvas\"></canvas>"
 
-  var destination_data = get_data_list('access-destionation')
+  var destination_data = get_data_list('block-destination')
   var host_name_list = [];
   var data = [];
 

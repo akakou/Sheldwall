@@ -63,7 +63,7 @@ function update() {
       var db = client.db('test');
 
       // remove signature
-      // await db.collection('signature').remove({});
+      await db.collection('signature').deleteMany({})
 
       /* insert signature data to mongodb */
       for(var file of file_list){
