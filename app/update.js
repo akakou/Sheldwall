@@ -59,25 +59,32 @@ function update() {
         return;
       }
 
-      // connect to collenction
+      // connect to collection
       var db = client.db('test');
+
+      // remove signature
+      // await db.collection('signature').remove({});
 
       /* insert signature data to mongodb */
       for(var file of file_list){
         // read file and dump to json
         var file = fs.readFileSync('./signature/' + file, 'utf-8');
         var signature = JSON.parse(file);
-
-        // insert response
-        await db.collenction('signature').insertOne(signature, () => {
+        
+        console.log(signature);
+        // insert signature
+        await db.collection('signature').insertMany(signature, () => {
           // check error
           if(err){
             console.log(err);
             return;
-          } else{
+          } else {
             console.log('insert signature !');
           }
         });
+
+        // optimization db
+        await db.collection('signature').ensureIndex({type: 1, value: 1}, {unique: true, dropDups: true});
       }
 
       // close database connection

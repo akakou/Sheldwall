@@ -25,7 +25,19 @@ async function checkString(response, client){
 
   // compare signature and response
   for(var signature of signature_list){
-    var is_secure = (response.indexOf(signature.string) === -1);
+    if (signature.type == 'include'){
+      is_secure = (response.indexOf(signature.value) === -1);
+
+    } else if(signature.type == 'match'){
+      is_secure = (response == signature.value);
+
+    } else if(signature.type = 'hash'){
+      // TODO
+      // is_secure = (response == signature.value);
+    
+    } else{
+      throw new Error('signature type ' + signature.type + 'is not difined');
+    }
 
     if(!is_secure){
       return false;

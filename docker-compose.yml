@@ -22,9 +22,7 @@ services:
     image: mongo:latest
     volumes:
       - ./db/data:/data/db
-      - ./db/init/:/docker-entrypoint-initdb.d/
     ports:
       - "27017:27017"
     environment:
       - IMPORT_FROM_VOLUME=true
-      - MONGO_INITDB_DATABASE=fluentd

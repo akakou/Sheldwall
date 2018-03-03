@@ -18,11 +18,14 @@ var config = require('./config');
 var filter = require('./filter');
 var update = require('./update');
 var analytics = require('./analytics');
+var init = require('./init')
 
 var sha256 = require("sha256");
 
 
 process.on('unhandledRejection', console.dir);
+
+init();
 
 /* run proxy server */
 var proxy = hoxy.createServer({
