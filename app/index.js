@@ -58,7 +58,7 @@ proxy.intercept({
       }
 
       // check response that is secure
-      log.is_secure = await filter.string(res, client);
+      log.is_secure = await filter.string(res, client, log);
 
       if (!log.is_secure){
         resp.string = config.danger_message;

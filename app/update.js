@@ -71,7 +71,6 @@ function update() {
         var file = fs.readFileSync('./signature/' + file, 'utf-8');
         var signature = JSON.parse(file);
         
-        console.log(signature);
         // insert signature
         await db.collection('signature').insertMany(signature, () => {
           // check error
