@@ -29,7 +29,8 @@ var config = {
 
   // port
   port: {
-    proxy: process.env.PROXY_PORT,
+    ssl: process.env.SSL_PORT,
+    plain: process.env.PLAIN_PORT,
     web: process.env.WEB_PORT
   },
 

@@ -14,6 +14,7 @@ var auth = require('basic-auth');
 var express = require("express");
 var app = express();
 
+var controll = require('./controll');
 var config = require('./config');
 var filter = require('./filter');
 var update = require('./update');
@@ -27,68 +28,32 @@ process.on('unhandledRejection', console.dir);
 
 init();
 
+console.log(config.ssl);
 /* run proxy server */
-var proxy = hoxy.createServer({
-  certAuthority: config.ssl,
-}).listen(config.port.proxy);
+var proxy = {
+  ssl: hoxy.createServer({
+    certAuthority: config.ssl,
+  }).listen(config.port.ssl),
+
+  plain: hoxy.createServer().listen(config.port.plain),
+
+  web: https.createServer(config.ssl, app)
+        .listen(config.port.web)
+}
+
 
 /* call when proxy get request */
-proxy.intercept({
+proxy.ssl.intercept({
   phase: 'response',
   as: 'string'
-}, async (req, resp, cycle) => {
-  console.log('access from ' + req.hostname);
-  var res = resp.string;
+}, controll.string);
 
-  /* database transaction */
-  await new Promise((resolve) => {
-    mongo.connect(config.mongo.url, async (err, client) => {
-      // saved log
-      var log = {
-        response: resp,
-        request: req,
-        time: new Date().getTime(),
-        is_secure: false
-      };
-
-      // check error
-      if(err){
-        console.log(err);
-        return;
-      }
-
-      // check response that is secure
-      log.is_secure = await filter.string(res, client, log);
-
-      if (!log.is_secure){
-        resp.string = config.danger_message;
-      }
-
-      // connect to collenction
-      var db = client.db("test");
-
-      // insert response
-      await db.collection('log').insertOne(log, (error, result) => {
-        // check error
-        if(err){
-          console.log(err);
-          return;
-        }
-      });
-
-      // after treatment
-      client.close();
-      resolve();
-    });
-  });
-
-  return;
-});
-
+proxy.plain.intercept({
+  phase: 'response',
+  as: 'string'
+}, controll.string);
 
 /* create analytics site server */
-var server = https.createServer(config.ssl, app).listen(config.port.web);
-
 // express setting
 app.use('/static', express.static(__dirname + '/static'));
 app.set('view engine', 'ejs');
@@ -111,7 +76,8 @@ app.get("/", async (req, res) => {
 
 
 /* show */
-console.log('Proxy server running at https://localhost:' + config.port.proxy);
+console.log('SSL Proxy server running at https://localhost:' + config.port.ssl);
+console.log('HTTP Proxy server running at https://localhost:' + config.port.plain);
 console.log('Web server running at https://localhost:' + config.port.web);
 
 /* updating signature loop */
