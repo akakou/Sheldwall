@@ -37,8 +37,6 @@ async function checkString(response, client, log){
       is_secure = (hash !== signature.value);
 
     } else if(signature.type === 'hostname'){
-      console.log(signature.value);
-      console.log(log.request._data.hostname);
       is_secure = (log.request._data.hostname !== signature.value);
     }
 

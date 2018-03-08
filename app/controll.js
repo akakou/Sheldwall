@@ -1,10 +1,20 @@
-async function ssl_proxy(req, resp, cycle) {
-  console.log('access from ' + req.hostname);
+'use strict'
+
+var mongo = require('mongodb').MongoClient;
+
+var config = require('./config');
+var filter = require('./filter');
+
+process.on('unhandledRejection', console.dir);
+
+
+async function controll_string(req, resp, cycle) {
+  console.log('access to ' + req.hostname);
   var res = resp.string;
 
   /* database transaction */
   await new Promise((resolve) => {
-    mongo.connect(config.mongo.url, async (err, client) => {
+    mongo.connect(config.mongo.url, async(err, client) => {
       // saved log
       var log = {
         response: resp,
@@ -16,7 +26,7 @@ async function ssl_proxy(req, resp, cycle) {
       // check error
       if(err){
         console.log(err);
-        return;
+        resolve();
       }
 
       // check response that is secure
@@ -24,6 +34,7 @@ async function ssl_proxy(req, resp, cycle) {
 
       if (!log.is_secure){
         resp.string = config.danger_message;
+        console.log('blocked !');
       }
 
       // connect to collenction
@@ -34,7 +45,7 @@ async function ssl_proxy(req, resp, cycle) {
         // check error
         if(err){
           console.log(err);
-          return;
+          resolve();
         }
       });
 
@@ -43,10 +54,8 @@ async function ssl_proxy(req, resp, cycle) {
       resolve();
     });
   });
-
-  return;
 }
 
 module.exports = {
-  string: ssl_proxy
+  string: controll_string
 }

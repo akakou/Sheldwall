@@ -28,7 +28,6 @@ process.on('unhandledRejection', console.dir);
 
 init();
 
-console.log(config.ssl);
 /* run proxy server */
 var proxy = {
   ssl: hoxy.createServer({
@@ -36,11 +35,10 @@ var proxy = {
   }).listen(config.port.ssl),
 
   plain: hoxy.createServer().listen(config.port.plain),
-
+  
   web: https.createServer(config.ssl, app)
         .listen(config.port.web)
 }
-
 
 /* call when proxy get request */
 proxy.ssl.intercept({
