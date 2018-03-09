@@ -74,7 +74,7 @@ function show_access_count() {
 
   for (var count = 0; count <= 30; count++) {
     if (day.getDate() === 1 || count === 0) {
-      day_string = day.getMonth() + '/' + day.getDate();
+      day_string = (day.getMonth() + 1) + '/' + day.getDate();
     } else {
       day_string = day.getDate();
     }
@@ -153,7 +153,8 @@ function show_access_count() {
         yAxes: [{
           ticks: {
             min: 0,
-            stepSize: 1
+            callback: function(value) {return ((value % 20) == 0)? value : ''},
+            stepSize: 5
           },
           display: true,
           scaleLabel: {
@@ -186,7 +187,7 @@ function show_access_block() {
 
   for (var count = 0; count <= 30; count++) {
     if (day.getDate() === 1 || count === 0) {
-      day_string = day.getMonth() + '/' + day.getDate();
+      day_string = (day.getMonth() + 1) + '/' + day.getDate();
     } else {
       day_string = day.getDate();
     }
@@ -259,6 +260,7 @@ function show_access_block() {
         }],
         yAxes: [{
           ticks: {
+            callback: function(value) {return ((value % 5) == 0)? value : ''},
             min: 0,
             stepSize: 1
           },
@@ -322,8 +324,9 @@ function show_access_destination() {
         }],
         yAxes: [{
           ticks: {
+            callback: function(value) {return ((value % 10) == 0)? value : ''},
             min: 0,
-            stepSize: 1
+            stepSize: 10
           },
           display: true,
           scaleLabel: {
@@ -399,7 +402,8 @@ function show_block_destination() {
         yAxes: [{
           ticks: {
             min: 0,
-            stepSize: 1
+            stepSize: 1,
+            callback: function(value) {return ((value % 5) == 0)? value : ''}
           },
           display: true,
           scaleLabel: {

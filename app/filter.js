@@ -38,6 +38,18 @@ async function checkString(response, client, log){
 
     } else if(signature.type === 'hostname'){
       is_secure = (log.request._data.hostname !== signature.value);
+
+    } else {
+      var filter = config.module.find((element, index, array) => {
+        return signature.type === element.type;
+      });
+
+      if (typeof filter === 'undefined'){
+        console.log('filter\'' + signature.type + '\' is not installed');
+        is_secure = true;
+      } else {
+        is_secure = await filter.module(log, signature, client);
+      }
     }
 
     if(!is_secure){

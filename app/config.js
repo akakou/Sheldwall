@@ -41,7 +41,12 @@ var config = {
   },
 
   // danger_message
-  danger_message: 'This site is danger !'
+  danger_message: 'This site is danger !',
+
+  // fileter module
+  module: [
+    require('./module/all_false')
+  ]
 };
 
 
